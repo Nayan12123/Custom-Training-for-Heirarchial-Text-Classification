@@ -1,14 +1,20 @@
 # HiTIN: Hierarchy-aware Tree Isomorphism Network for Hierarchical Text Classification
 
-Official implementation for ACL 2023 accepted paper "HiTIN: Hierarchy-aware Tree Isomorphism Network for Hierarchical Text Classification" . [[arXiv](https://arxiv.org/abs/2305.15182)][[pdf](https://arxiv.org/pdf/2305.15182.pdf)][[bilibili](https://www.bilibili.com/video/BV1vL411i7uY/?share_source=copy_web&vd_source=a9cc6ff9a8cf3c92bf2375da5b56a007)]
+Custom Dataset Implementation for the paper "HiTIN: Hierarchy-aware Tree Isomorphism Network for Hierarchical Text Classification" . [[arXiv](https://arxiv.org/abs/2305.15182)][[pdf](https://arxiv.org/pdf/2305.15182.pdf)][[bilibili](https://www.bilibili.com/video/BV1vL411i7uY/?share_source=copy_web&vd_source=a9cc6ff9a8cf3c92bf2375da5b56a007)]
+1. This method specifically encodes the text using BERT based text encoder, then further the label graph is encoded using TreeEncoders. This is helpful in capturing the hierarchial information and passing the same to the model.
+2. The method requires the graph to be a DAG (Directed Acyclic Graph).
+3. In the custom dataset we have 3 classes cat1,cat2,cat3, out of them only cat1 and cat2 are mutually exclusive while cat3 is not i.e. Suppose for cat2_lbl1 and cat2_lbl2, there can be a possibility that cat3_lbl1 can be a subclass of both of them at different times.
+4. So we have combined the cat3 and cat2 classes and have hence generated the taxonomy for the same. 
 
 ## Requirements
-
-**It's hard to reproduce the results without the same devices and environment.** Although our code is highly compatible with mulitiple python environments, we strongly recommend that you create a new environment according to our settings.
-
+You can create the environemnt using the yml file and the command given below.
+```shell
+conda env create -f environment.yml
+```
+Here are the basic env requirements
 - Python == 3.7.13
 - numpy == 1.21.5
-- PyTorch == 1.11.0
+- torch == 1.11.0
 - scikit-learn == 1.0.2
 - transformers==4.19.2
 - numba==0.56.2
@@ -16,42 +22,22 @@ Official implementation for ACL 2023 accepted paper "HiTIN: Hierarchy-aware Tree
 
 ## Data preparation
 
-Please manage to acquire the original datasets and then run these scripts.
-
-### Web Of Science (WOS)
-
-The original dataset can be acquired freely in the repository of [HDLTex](https://github.com/kk7nc/HDLTex). Preprocess code could refer to the repository of [HiAGM](https://github.com/Alibaba-NLP/HiAGM). Please download the release of **WOS-46985(version 2)**, open `WebOfScience/Meta-data/Data.xls` and convert it to `.txt` format (Click "Save as" in Office Excel). Then, run:
-
 ```shell
 cd data
-python preprocess_wos.py
+python preprocess_custom.py
 ```
-
-### NyTimes (NYT)
-
-The original dataset is available [here](https://catalog.ldc.upenn.edu/LDC2008T19) for a fee.  When you have fetched the original archive,  Unzip the files and make sure that the file path matches the indices in `data/idnewnyt_xxx.json`. Here we post our bash script in `nyt.sh` , which takes hours to accomplish the preprocessing (You could manage by your own way). 
 
 ```shell
-cd data
-bash nyt.sh
-python preprocess_nyt.py
+python hiearchy_tree_statistic.py ./config/tin-custom-data.json
 ```
 
-### RCV1-V2
 
-The preprocessing code could refer to the [repository of reuters_loader](https://github.com/ductri/reuters_loader) and we provide a copy here. The original dataset can be acquired [here](https://trec.nist.gov/data/reuters/reuters.html) by signing an agreement. It took us 1 day to receive a response.
-
-```shell
-cd data
-python data_rcv1.py
-python preprocess_rcv1.py
-```
 
 ### Conduct experiments on your own data
 
-In [HiAGM](https://github.com/Alibaba-NLP/HiAGM), an additional step is required to count the prior probabilities between parent and child labels by running `python helper/hiearchy_tree_statistic.py`. HiTIN only requires unweighted adjacency matrix of label hierarchies but we still retain this property and save the statistics in `data/DATASET_prob.json` as we also implement baseline methods including TextRCNN, BERT-based HiAGM. 
+An additional step is required to count the prior probabilities between parent and child labels by running `python hiearchy_tree_statistic.py your_config_file_path`. HiTIN only requires unweighted adjacency matrix of label hierarchies but they still retain this property and save the statistics in `data/DATASET_prob.json` as they also implement baseline methods including TextRCNN, BERT-based HiAGM. 
 
-If you tend to evaluate these methods on your own dataset, please make sure to organize your data in the following format:
+The final dataset should be organied in the given below format
 
 ```
 {
@@ -67,16 +53,12 @@ where "doc_keyword" and "doc_topic" are optional.
 then, replace the label name with your dataset's in line143~146 of `helper/hierarchy_tree_statistics.py` and run:
 
 ```shell
-python helper/hierarchy_tree_statistic.py
+python hierarchy_tree_statistic.py your_config_file_path
 ```
 
-> Thanks to the superior framework open-sourced by [NeuralClassifier](https://github.com/Tencent/NeuralNLP-NeuralClassifier). You could also implement other methods in HTC or propose your own model.
 
 ## Train
 
-Hyper-parameters need to be specified through the commandline arguments. Please refer to our paper for the details of how we set the hyper-parameters.
-
-To learn hyperparameters to be specified, please see: 
 
 ```
 python train.py [-h] -cfg CONFIG_FILE [-b BATCH_SIZE] [-lr LEARNING_RATE]
@@ -120,40 +102,15 @@ optional arguments:
                         of log files.
 ```
 
-We provide a lot of config files in `./config`. 
+The config file for this is present in `./config`. 
 
 **Before running, the last thing to do is modify the `YOUR_DATA_DIR`, `YOUR_BERT_DIR` in the json file.**
 
-An example of training HiTIN on RCV1 with **TextRCNN** as the text encoder:
+
+An example of training HiTIN on custom dataset with **BERT** as the text encoder:
 
 ```shell
-python train.py -cfg config/tin-rcv1-v2.json -k 2 -b 64 -hd 512 -lr 1e-4 -tp sum
+python train.py -cfg config/tin-custom-data.json -k 2 -b 12 -hd 768 -lr 1e-4 -tp sum
 ```
 
-An example of training HiTIN on WOS with **BERT** as the text encoder:
-
-```shell
-python train.py -cfg config/tin-wos-bert.json -k 2 -b 12 -hd 768 -lr 1e-4 -tp sum
-```
-
-## Citation
-
-If you found the provided code with our paper useful in your work, please **star** this repo and **cite** our paper!
-
-```
-@inproceedings{zhu-etal-2023-hitin,
-    title = "{H}i{TIN}: Hierarchy-aware Tree Isomorphism Network for Hierarchical Text Classification",
-    author = "Zhu, He  and
-      Zhang, Chong  and
-      Huang, Junjie  and
-      Wu, Junran  and
-      Xu, Ke",
-    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
-    month = jul,
-    year = "2023",
-    address = "Toronto, Canada",
-    publisher = "Association for Computational Linguistics",
-    url = "https://aclanthology.org/2023.acl-long.432",
-    pages = "7809--7821",
-}
-```
+Here the links for the Models:
