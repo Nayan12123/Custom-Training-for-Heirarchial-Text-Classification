@@ -118,8 +118,7 @@ Here are some of the important links:
 |----------------------------|------------------------------------------------------------------|
 | Best Macro F1 Score Model                    | [link](https://drive.google.com/file/d/1WUggtXg5CMiBoD5XxNtnTdxGQ3pLfeaL/view?usp=sharing)                         |
 | Best Micro F1 Score Model                    | [link](https://drive.google.com/file/d/1e-E5tuPFDAQohAMh600ayAXfkJa3kJH7/view?usp=sharing)                         |
-
-| bert-base-uncased-model                     | [link](https://drive.google.com/drive/folders/1ECd7u4L2nCMu4FwWOMCZ3aqrvFzn-qS7?usp=sharing)                  |
-| GloVE embeddings                    | [link](https://drive.google.com/file/d/1uXeu6KU_gZGTv7oPAmvd9guLCkIHWdZL/view?usp=sharing) |
+| bert-base-uncased-model                      | [link](https://drive.google.com/drive/folders/1ECd7u4L2nCMu4FwWOMCZ3aqrvFzn-qS7?usp=sharing)                       |
+| GloVE embeddings                             | [link](https://drive.google.com/file/d/1uXeu6KU_gZGTv7oPAmvd9guLCkIHWdZL/view?usp=sharing)                         |
 
 
