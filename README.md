@@ -2,7 +2,7 @@
 
 Custom Dataset Implementation for the paper "HiTIN: Hierarchy-aware Tree Isomorphism Network for Hierarchical Text Classification" . [[arXiv](https://arxiv.org/abs/2305.15182)][[pdf](https://arxiv.org/pdf/2305.15182.pdf)][[bilibili](https://www.bilibili.com/video/BV1vL411i7uY/?share_source=copy_web&vd_source=a9cc6ff9a8cf3c92bf2375da5b56a007)]
 1. This method specifically encodes the text using BERT based text encoder, then further the label graph is encoded using TreeEncoders. This is helpful in capturing the hierarchial information and passing the same to the model.
-2. The method requires the graph to be a DAG (Directed Acyclic Graph).
+2. The method requires the labels to be a DAG (Directed Acyclic Graph).
 3. In the custom dataset we have 3 classes cat1,cat2,cat3, out of them only cat1 and cat2 are mutually exclusive while cat3 is not i.e. Suppose for cat2_lbl1 and cat2_lbl2, there can be a possibility that cat3_lbl1 can be a subclass of both of them at different times.
 4. So we have combined the cat3 and cat2 classes and have hence generated the taxonomy for the same. 
 
