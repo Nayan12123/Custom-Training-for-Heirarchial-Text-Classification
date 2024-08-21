@@ -1,4 +1,4 @@
-# HiTIN: Hierarchy-aware Tree Isomorphism Network for Hierarchical Text Classification
+# Implementation of HiTIN: (Hierarchy-aware Tree Isomorphism Network for Hierarchical Text Classification) on Custom Dataset.
 
 Custom Dataset Implementation for the paper "HiTIN: Hierarchy-aware Tree Isomorphism Network for Hierarchical Text Classification" . [[arXiv](https://arxiv.org/abs/2305.15182)][[pdf](https://arxiv.org/pdf/2305.15182.pdf)][[bilibili](https://www.bilibili.com/video/BV1vL411i7uY/?share_source=copy_web&vd_source=a9cc6ff9a8cf3c92bf2375da5b56a007)]
 1. This method specifically encodes the text using BERT based text encoder, then further the label graph is encoded using TreeEncoders. This is helpful in capturing the hierarchial information and passing the same to the model.
