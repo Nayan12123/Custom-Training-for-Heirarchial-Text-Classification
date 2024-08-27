@@ -145,12 +145,18 @@ def train(config, args):
                 break
         if os.path.isfile(os.path.join(model_checkpoint, latest_model_file)):
             logger.info('Loading Previous Checkpoint...')
+            print('Loading Previous Checkpoint...')
+            
             logger.info('Loading from {}'.format(os.path.join(model_checkpoint, latest_model_file)))
+            print('Loading from {}'.format(os.path.join(model_checkpoint, latest_model_file)))
+            
             best_performance, config = load_checkpoint(model_file=os.path.join(model_checkpoint, latest_model_file),
                                                        model=hiagm,
                                                        config=config,
                                                        optimizer=optimizer)
             logger.info('Previous Best Performance---- Micro-F1: {}%, Macro-F1: {}%'.format(
+                best_performance[0], best_performance[1]))
+            print('Previous Best Performance---- Micro-F1: {}%, Macro-F1: {}%'.format(
                 best_performance[0], best_performance[1]))
 
     for epoch in range(config.train.start_epoch, config.train.end_epoch):
@@ -173,16 +179,20 @@ def train(config, args):
             # reduce LR on plateau
             if wait % config.train.optimizer.lr_patience == 0:
                 logger.warning("Performance has not been improved for {} epochs, updating learning rate".format(wait))
+                print("Performance has not been improved for {} epochs, updating learning rate".format(wait))
                 trainer.update_lr()
             # early stopping
             if wait == config.train.optimizer.early_stopping:
                 logger.warning("Performance has not been improved for {} epochs, stopping train with early stopping"
+                               .format(wait))
+                print("Performance has not been improved for {} epochs, stopping train with early stopping"
                                .format(wait))
                 break
 
         if performance['micro_f1'] > best_performance[0]:
             wait = 0
             logger.info('Improve Micro-F1 {}% --> {}%'.format(best_performance[0], performance['micro_f1']))
+            print('Improve Micro-F1 {}% --> {}%'.format(best_performance[0], performance['micro_f1']))
             best_performance[0] = performance['micro_f1']
             best_epoch[0] = epoch
             save_checkpoint({
@@ -195,6 +205,7 @@ def train(config, args):
         if performance['macro_f1'] > best_performance[1]:
             wait = 0
             logger.info('Improve Macro-F1 {}% --> {}%'.format(best_performance[1], performance['macro_f1']))
+            print('Improve Macro-F1 {}% --> {}%'.format(best_performance[1], performance['macro_f1']))
             best_performance[1] = performance['macro_f1']
             best_epoch[1] = epoch
             save_checkpoint({
@@ -215,6 +226,7 @@ def train(config, args):
         #     }, os.path.join(model_checkpoint, model_name + '_epoch_' + str(epoch)))
 
         logger.info('Epoch {} Time Cost {} secs.'.format(epoch, time.time() - start_time))
+        print('Epoch {} Time Cost {} secs.'.format(epoch, time.time() - start_time))
 
 
     best_epoch_model_file = os.path.join(model_checkpoint, 'best_micro_' + model_name)
