@@ -75,7 +75,7 @@
       },
       "batch_size": 32,
       "start_epoch": 0,
-      "end_epoch": 100,
+      "end_epoch": 50,
       "loss": {
         "classification": "BCEWithLogitsLoss",
         "recursive_regularization": {
