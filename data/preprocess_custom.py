@@ -6,7 +6,7 @@ import re
 import pandas as pd
 import json
 
-FILE_DIR = './data/data.csv'
+FILE_DIR = 'HiTin/data/data.csv'
 total_len = []
 np.random.seed(7)
 
@@ -121,13 +121,14 @@ def df_to_dict(df):
 
 
 
-if __name__ == '__main__':
-    df = pd.read_csv(FILE_DIR)
-    df['level_2'] = df[['Cat2','Cat3']].apply(lambda x: x.Cat2+"_"+x.Cat3,axis=1)
-    df_to_dict(df)
-    taxonomy = create_taxonomy(df)
-    write_taxonomy_to_file(taxonomy)
-    split_train_dev_test()
+# if __name__ == '__main__':
+print(os.getcwd())
+df = pd.read_csv(FILE_DIR)
+df['level_2'] = df[['Cat2','Cat3']].apply(lambda x: x.Cat2+"_"+x.Cat3,axis=1)
+df_to_dict(df)
+taxonomy = create_taxonomy(df)
+write_taxonomy_to_file(taxonomy)
+split_train_dev_test()
 
 
 

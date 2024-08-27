@@ -33,21 +33,11 @@ class HiAGM(nn.Module):
         super(HiAGM, self).__init__()
         self.config = config
         self.vocab = vocab
+        self.model_mode = model_mode
         self.device = config.train.device_setting.device
-
         self.token_map, self.label_map = vocab.v2i['token'], vocab.v2i['label']
 
-        self.token_embedding = EmbeddingLayer(
-            vocab_map=self.token_map,
-            embedding_dim=config.embedding.token.dimension,
-            vocab_name='token',
-            config=config,
-            padding_index=vocab.padding_index,
-            pretrained_dir=config.embedding.token.pretrained_file,
-            model_mode=model_mode,
-            initial_type=config.embedding.token.init_type
-        )
-
+        
         self.dataflow_type = DATAFLOW_TYPE[model_type]
 
         # self.text_encoder = TextEncoder(config)
@@ -99,13 +89,24 @@ class HiAGM(nn.Module):
         """
 
         # get distributed representation of tokens, (batch_size, max_length, embedding_dimension)
-        embedding = self.token_embedding(batch['token'].to(self.config.train.device_setting.device))
 
         # get the length of sequences for dynamic rnn, (batch_size, 1)
         seq_len = batch['token_len']
         if self.config.text_encoder.type == 'bert':
             token_output = self.text_encoder(batch)
         else:
+            self.token_embedding = EmbeddingLayer(
+            vocab_map=self.token_map,
+            embedding_dim=self.config.embedding.token.dimension,
+            vocab_name='token',
+            config=self.config,
+            padding_index=self.vocab.padding_index,
+            pretrained_dir=self.config.embedding.token.pretrained_file,
+            model_mode=self.model_mode,
+            initial_type=self.config.embedding.token.init_type
+        )
+
+            embedding = self.token_embedding(batch['token'].to(self.config.train.device_setting.device))
             token_output = self.text_encoder(embedding, seq_len)
 
         logits = self.hiagm(token_output)

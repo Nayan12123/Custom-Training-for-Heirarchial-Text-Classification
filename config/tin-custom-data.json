@@ -1,7 +1,7 @@
 {
     "data": {
       "dataset": "talentica_dataset",
-      "data_dir": "data",
+      "data_dir": "",
       "train_file": "custom_dataset_total_train.json",
       "val_file": "custom_dataset_total_val.json",
       "test_file": "custom_dataset_total_test.json",
@@ -16,9 +16,8 @@
     },
     "embedding": {
       "token": {
-        "dimension": 300,
-        "type": "pretrain",
-        "pretrained_file": "data/glove.6B.300d.txt",
+        "dimension": 300, 
+        "type": "pretrain", 
         "dropout": 0.5,
         "init_type": "kaiming_uniform"
       },
@@ -31,7 +30,7 @@
     },
     "text_encoder": {
       "type": "bert",
-      "bert_model_dir": "bert_base_model",
+      "bert_model_dir": "HiTin/bert_base_model",
       "max_length": 300,
       "RNN": {
         "bidirectional": true,
